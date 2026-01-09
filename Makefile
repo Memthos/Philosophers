@@ -4,6 +4,8 @@ NAME=philo
 
 all: $(NAME)
 
+$(NAME):
+
 re: clean all
 
 clean:
