@@ -6,16 +6,16 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:36:04 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/13 13:37:57 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/14 01:59:22 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-int	get_number(const char *nptr)
+size_t	get_number(const char *nptr)
 {
 	int	i;
-	int	res;
+	size_t	res;
 
 	i = 0;
 	res = 0;

@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/13 16:46:25 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/14 02:04:12 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	routine(t_philo *philo)
 
 static int	init_forks(t_program **prog)
 {
-	int		i;
+	int	i;
 
 	(*prog)->forks	= malloc(sizeof(pthread_mutex_t *) * (*prog)->nb_philos);
 	if (!(*prog)->forks)
@@ -27,17 +27,28 @@ static int	init_forks(t_program **prog)
 		pthread_mutex_init((*prog)->forks[i], NULL);
 }
 
-static int	init_philos(t_program **prog)
+static int	init_philos_data(t_program **prog, int ac, char **av)
 {
 	int		i;
 
+		(*prog)->nb_philos = get_number(av[0]);
 	(*prog)->philos	= malloc(sizeof(t_philo *) * (*prog)->nb_philos);
 	if (!(*prog)->philos)
 		return (1);
 	i = -1;
 	while (++i < (*prog)->nb_philos)
-		pthread_create(&(*prog)->philos[i]->thread, NULL,
-		routine, (*prog)->philos[i]);
+	{
+		(*prog)->philos[i]->nb = i + 1;
+		(*prog)->philos[i]->nb_eaten = 0;
+		if (ac == 5)
+			(*prog)->philos[i]->nb_to_eat = get_number(av[4]);
+		else
+			(*prog)->philos[i]->nb_to_eat = -1;
+		(*prog)->philos[i]->time_to_die = get_number(av[1]);
+		(*prog)->philos[i]->time_to_eat = get_number(av[2]);
+		(*prog)->philos[i]->time_to_sleep = get_number(av[3]);
+		(*prog)->philos[i]->time_last_meal = 0;
+	}
 }
 
 void	close(t_program **prog)
@@ -71,8 +82,7 @@ int	main(int ac, char **av)
 	prog = malloc(sizeof(t_program));
 	if (!prog)
 		return (NULL);
-	prog->nb_philos = get_number(av[2]);
-	if (init_forks(&prog) || init_philos(&prog))
+	if (init_forks(&prog) || init_philos_data(&prog, ac - 1, av + 1))
 	{
 		close(&prog);
 		return (1);
