@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/14 02:03:50 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/14 13:08:05 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,33 @@
 typedef struct s_philo
 {
 	pthread_t		thread;
+	int				*dead;
 	int				nb;
-	int				nb_philos;
 	int				nb_eaten;
 	int				nb_to_eat;
+	int				wanna_eat;
+	int				can_eat;
 	size_t			time_to_die;
 	size_t			time_to_eat;
 	size_t			time_to_sleep;
 	size_t			time_last_meal;
+	size_t			start_time;
 	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	*r_fork;
 }	t_philo;
 
-typedef struct	s_program
+typedef struct s_prog
 {
 	t_philo			**philos;
-	int				nb_philos;
 	pthread_mutex_t	**forks;
-	size_t			start_time;
-}	t_program;
+	int				any_dead;
+	int				nb_philos;
+}	t_prog;
 
-int	get_number(const char *nptr);
+int		get_number(const char *nptr);
+int		init_philos_data(t_prog **prog, int ac, char **av);
+int		start_threads(t_prog **prog);
+void	philo_routine(t_philo **philo);
+size_t	get_time(t_philo **philo);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:36:04 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/14 01:59:22 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/14 13:11:58 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 size_t	get_number(const char *nptr)
 {
-	int	i;
+	int		i;
 	size_t	res;
 
 	i = 0;
@@ -26,4 +26,14 @@ size_t	get_number(const char *nptr)
 		i++;
 	}
 	return (res);
+}
+
+size_t	get_time(t_philo **philo)
+{
+	struct timeval	t;
+	size_t			time;
+
+	gettimeofday(&t, NULL);
+	time = (t.tv_sec * 1000) + (t.tv_usec / 1000) - (*philo)->start_time;
+	return (time);
 }
