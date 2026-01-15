@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/14 13:08:05 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/15 15:20:30 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,18 @@ typedef struct s_philo
 
 typedef struct s_prog
 {
-	t_philo			**philos;
-	pthread_mutex_t	**forks;
+	t_philo			*philos;
+	pthread_mutex_t	*forks;
 	int				any_dead;
 	int				nb_philos;
 }	t_prog;
 
-int		get_number(const char *nptr);
-int		init_philos_data(t_prog **prog, int ac, char **av);
-int		start_threads(t_prog **prog);
-void	philo_routine(t_philo **philo);
-size_t	get_time(t_philo **philo);
+size_t	get_number(const char *nptr);
+int		init_philos_data(t_prog *prog, int ac, char **av);
+int		start_threads(t_prog *prog);
+void	*philo_routine(void *arg);
+size_t	get_time(t_philo *philo);
+int		can_lock_forks(t_prog *prog, int index);
+void	lock_forks(t_philo *philo);
 
 #endif
