@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/15 14:56:35 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/16 15:53:48 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,23 +48,8 @@ static void	close_philo(t_prog *prog)
 
 static void	observer(t_prog *prog)
 {
-	int		i;
-	t_philo	*philo_to_eat;
-
 	while (!prog->any_dead)
-	{
-		i = -1;
-		philo_to_eat = NULL;
-		while (++i < prog->nb_philos)
-		{
-			if (prog->philos[i].wanna_eat
-				&& !can_lock_forks(prog, i) && (!philo_to_eat
-					|| prog->philos[i].nb_eaten < philo_to_eat->nb_eaten))
-				philo_to_eat = &prog->philos[i];
-		}
-		if (philo_to_eat)
-			philo_to_eat->can_eat = 1;
-	}
+		usleep(100000);
 }
 
 int	main(int ac, char **av)

@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:36:04 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/15 14:42:30 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/16 15:48:28 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,28 +38,13 @@ size_t	get_time(t_philo *philo)
 	return (time);
 }
 
-void	lock_forks(t_philo *philo)
-{
-	pthread_mutex_lock(philo->l_fork);
-	printf("%lu %d has taken a fork\n", get_time(philo), philo->nb);
-	pthread_mutex_lock(philo->r_fork);
-	printf("%lu %d has taken a fork\n", get_time(philo), philo->nb);
-}
 
-int	can_lock_forks(t_prog *prog, int index)
+void	print(t_philo *philo, const char *s)
 {
-	int	left_nb;
-	int	right_nb;
+	size_t	time;
 
-	if (prog->philos[index].nb == 1)
-		left_nb = prog->nb_philos - 1;
-	else
-		left_nb = index - 1;
-	if (index == prog->nb_philos - 1)
-		right_nb = 0;
-	else
-		right_nb = index + 1;
-	if (prog->philos[left_nb].can_eat || prog->philos[right_nb].can_eat)
-		return (1);
-	return (0);
+	pthread_mutex_lock(&philo->print);
+	time = get_time(philo);
+	printf("%lu %d %s\n", time, philo->nb, s);
+	pthread_mutex_unlock(&philo->print);
 }
