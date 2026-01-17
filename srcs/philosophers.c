@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 09:37:03 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/16 15:53:55 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/17 18:48:14 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,16 @@ int	init_philos_data(t_prog *prog, int ac, char **av)
 		prog->philos[i].nb = i + 1;
 		prog->philos[i].nb_eaten = 0;
 		if (ac == 5)
-		prog->philos[i].nb_to_eat = get_number(av[4]);
+			prog->philos[i].nb_to_eat = get_number(av[4]);
 		else
-		prog->philos[i].nb_to_eat = -1;
-		prog->philos[i].eat_status = NONE;
-		pthread_mutex_init(&prog->philos[i].state, NULL);
+			prog->philos[i].nb_to_eat = -1;
+		pthread_mutex_init(&prog->philos[i].eat_lock, NULL);
 		prog->philos[i].time_to_die = get_number(av[1]);
 		prog->philos[i].time_to_eat = get_number(av[2]);
 		prog->philos[i].time_to_sleep = get_number(av[3]);
 		prog->philos[i].time_last_meal = 0;
+		prog->philos[i].dead_lock = &prog->death_lock;
+		prog->philos[i].printf_lock = &prog->print_lock;
 		forks_pointers(prog, i);
 	}
 	return (0);
@@ -58,9 +59,9 @@ int	start_threads(t_prog *prog)
 	struct timeval	t;
 
 	i = -1;
+	gettimeofday(&t, NULL);
 	while (++i < prog->nb_philos)
 	{
-		gettimeofday(&t, NULL);
 		prog->philos[i].start_time = (t.tv_sec * 1000) + (t.tv_usec / 1000);
 		if (pthread_create(&prog->philos[i].thread, NULL,
 				philo_routine, &prog->philos[i]) != 0)
@@ -94,13 +95,13 @@ void	*philo_routine(void *arg)
 	philo = arg;
 	if (philo->nb % 2)
 		usleep(1000);
-	while (1)
+	while (!is_dead(philo) && !eaten_enough(philo))
 	{
 		lock_forks(philo);
-		pthread_mutex_lock(&philo->state);
+		pthread_mutex_lock(&philo->eat_lock);
 		philo->time_last_meal = get_time(philo);
 		philo->nb_eaten++;
-		pthread_mutex_unlock(&philo->state);
+		pthread_mutex_unlock(&philo->eat_lock);
 		print(philo, "is eating");
 		usleep(philo->time_to_eat * 1000);
 		pthread_mutex_unlock(philo->l_fork);
@@ -109,6 +110,5 @@ void	*philo_routine(void *arg)
 		usleep(philo->time_to_sleep * 1000);
 		print(philo, "is thinking");
 	}
-	*philo->dead = 1;
-	printf("%lu %d has died\n", get_time(philo), philo->nb);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:36:04 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/16 15:48:28 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/17 18:52:09 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,58 @@ void	print(t_philo *philo, const char *s)
 {
 	size_t	time;
 
-	pthread_mutex_lock(&philo->print);
+	pthread_mutex_lock(philo->printf_lock);
+	if (is_dead(philo))
+	{
+		pthread_mutex_unlock(philo->printf_lock);
+		return ;
+	}
 	time = get_time(philo);
 	printf("%lu %d %s\n", time, philo->nb, s);
-	pthread_mutex_unlock(&philo->print);
+	pthread_mutex_unlock(philo->printf_lock);
+}
+
+int	is_dead(t_philo *philo)
+{
+	int	res;
+
+	pthread_mutex_lock(philo->dead_lock);
+	res = *philo->dead;
+	pthread_mutex_unlock(philo->dead_lock);
+	return (res);
+}
+
+int	eaten_enough(t_philo *philo)
+{
+	int	res;
+
+	res = 1;
+	pthread_mutex_lock(&philo->eat_lock);
+	if (philo->nb_to_eat == -1 || philo->nb_eaten < philo->nb_to_eat)
+		res = 0;
+	pthread_mutex_unlock(&philo->eat_lock);
+	return (res);
+}
+
+int	is_starving(t_philo *philo)
+{
+	int	res;
+	size_t	last_meal;
+
+	res = 0;
+	pthread_mutex_lock(&philo->eat_lock);
+	last_meal = philo->time_last_meal;
+	pthread_mutex_unlock(&philo->eat_lock);
+	if (get_time(philo) - last_meal >= philo->time_to_die)
+		res = 1;
+	return (res);
+}
+
+void	thread_join(t_prog *prog)
+{
+	int	i;
+
+	i = -1;
+	while (++i < prog->nb_philos)
+		pthread_join(prog->philos[i].thread, NULL);
 }

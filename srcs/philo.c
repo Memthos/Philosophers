@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/16 15:53:48 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/17 18:57:14 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,23 +33,42 @@ static void	close_philo(t_prog *prog)
 	{
 		i = -1;
 		while (++i < prog->nb_philos)
-		{
 			pthread_mutex_destroy(&prog->forks[i]);
-		}
 		free(prog->forks);
 	}
 	if (prog->philos)
-	{
-		i = -1;
-		while (++i < prog->nb_philos)
-			free(&prog->philos[i]);
-	}
+		free(prog->philos);
+	pthread_mutex_destroy(&prog->death_lock);
+	pthread_mutex_destroy(&prog->print_lock);
 }
 
 static void	observer(t_prog *prog)
 {
-	while (!prog->any_dead)
-		usleep(100000);
+	int		i;
+	int		res;
+	size_t	time;
+
+	res = 0;
+	while (!res)
+	{
+		i = -1;
+		while(++i < prog->nb_philos)
+		{
+			if (is_starving(&prog->philos[i]))
+			{
+				pthread_mutex_lock(prog->philos[i].dead_lock);
+				*prog->philos[i].dead = 1;
+				pthread_mutex_unlock(prog->philos[i].dead_lock);
+				pthread_mutex_lock(prog->philos[i].printf_lock);
+				time = get_time(&prog->philos[i]);
+				printf("%lu %d has died\n", time, prog->philos[i].nb);
+				pthread_mutex_unlock(prog->philos[i].printf_lock);
+				res = 1;
+				break ;
+			}
+		}
+		usleep(1000);
+	}
 }
 
 int	main(int ac, char **av)
@@ -60,6 +79,8 @@ int	main(int ac, char **av)
 		return (1);
 	prog.any_dead = 0;
 	prog.nb_philos = get_number(av[1]);
+	pthread_mutex_init(&prog.death_lock, NULL);
+	pthread_mutex_init(&prog.print_lock, NULL);
 	if (init_forks(&prog) || init_philos_data(&prog, ac - 1, av + 1))
 	{
 		close_philo(&prog);
@@ -71,6 +92,7 @@ int	main(int ac, char **av)
 		return (1);
 	}
 	observer(&prog);
+	thread_join(&prog);
 	close_philo(&prog);
 	return (0);
 }
