@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/17 18:57:14 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/18 22:27:51 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,15 @@ static int	init_forks(t_prog *prog)
 	return (0);
 }
 
+static void	thread_join(t_prog *prog)
+{
+	int	i;
+
+	i = -1;
+	while (++i < prog->nb_philos)
+		pthread_join(prog->philos[i].thread, NULL);
+}
+
 static void	close_philo(t_prog *prog)
 {
 	int	i;
@@ -37,7 +46,12 @@ static void	close_philo(t_prog *prog)
 		free(prog->forks);
 	}
 	if (prog->philos)
+	{
+		i = -1;
+		while (++i < prog->nb_philos)
+			pthread_mutex_destroy(&prog->philos[i].eat_lock);
 		free(prog->philos);
+	}
 	pthread_mutex_destroy(&prog->death_lock);
 	pthread_mutex_destroy(&prog->print_lock);
 }
@@ -52,7 +66,7 @@ static void	observer(t_prog *prog)
 	while (!res)
 	{
 		i = -1;
-		while(++i < prog->nb_philos)
+		while (++i < prog->nb_philos)
 		{
 			if (is_starving(&prog->philos[i]))
 			{
@@ -60,14 +74,14 @@ static void	observer(t_prog *prog)
 				*prog->philos[i].dead = 1;
 				pthread_mutex_unlock(prog->philos[i].dead_lock);
 				pthread_mutex_lock(prog->philos[i].printf_lock);
-				time = get_time(&prog->philos[i]);
+				time = get_sim_time(&prog->philos[i]);
 				printf("%lu %d has died\n", time, prog->philos[i].nb);
 				pthread_mutex_unlock(prog->philos[i].printf_lock);
 				res = 1;
 				break ;
 			}
 		}
-		usleep(1000);
+		ft_usleep(1);
 	}
 }
 

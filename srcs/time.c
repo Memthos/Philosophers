@@ -1,41 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tools.c                                            :+:      :+:    :+:   */
+/*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/13 13:36:04 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/18 22:11:54 by mperrine         ###   ########.fr       */
+/*   Created: 2026/01/18 22:08:10 by mperrine          #+#    #+#             */
+/*   Updated: 2026/01/18 22:14:28 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-size_t	get_number(const char *nptr)
+size_t	get_current_time(void)
 {
-	int		i;
-	size_t	res;
+	size_t			time;
+	struct timeval	t;
 
-	i = 0;
-	res = 0;
-	while (nptr[i] && (nptr[i] >= '0' && nptr[i] <= '9'))
-	{
-		res *= 10;
-		res += nptr[i] - 48;
-		i++;
-	}
-	return (res);
+	gettimeofday(&t, NULL);
+	time = (t.tv_sec * 1000) + (t.tv_usec / 1000);
+	return (time);
 }
 
-void	print(t_philo *philo, const char *s)
+void	ft_usleep(size_t time)
+{
+	size_t	start;
+
+	start = get_current_time();
+	while (get_current_time() - start < time)
+		usleep(500);
+}
+
+size_t	get_sim_time(t_philo *philo)
 {
 	size_t	time;
 
-	if (is_dead(philo))
-		return ;
-	pthread_mutex_lock(philo->printf_lock);
-	time = get_sim_time(philo);
-	printf("%lu %d %s\n", time, philo->nb, s);
-	pthread_mutex_unlock(philo->printf_lock);
+	time = get_current_time() - philo->start_time;
+	return (time);
 }
