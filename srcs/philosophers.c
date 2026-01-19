@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 09:37:03 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/19 13:31:07 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/19 13:34:18 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	*philo_routine(void *arg)
 	t_philo	*philo;
 
 	philo = arg;
-	if (!philo->nb % 2)
+	if (philo->nb % 2)
 		ft_usleep(1);
 	one_philo(philo);
 	while (!should_stop(philo))
