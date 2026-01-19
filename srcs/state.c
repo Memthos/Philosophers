@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:08:36 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/19 13:44:39 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/19 13:51:01 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ int	eaten_enough(t_prog *prog)
 	pthread_mutex_lock(&prog->philos[0].eat_lock);
 	nb_to_eat = prog->philos[0].nb_to_eat;
 	pthread_mutex_unlock(&prog->philos[0].eat_lock);
+	if (nb_to_eat == -1)
+		return (0);
 	i = -1;
 	res = 0;
 	while (++i < prog->nb_philos)
