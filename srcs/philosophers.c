@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 09:37:03 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/19 13:34:18 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/19 13:36:29 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ static void	lock_forks(t_philo *philo)
 
 static void	one_philo(t_philo *philo)
 {
+	if (philo->l_fork != philo->r_fork)
+		return ;
 	pthread_mutex_lock(philo->r_fork);
 	check_print(philo, "has taken a fork");
 	ft_usleep(philo->time_to_die);
