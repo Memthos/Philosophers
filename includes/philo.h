@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/18 22:12:47 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/19 13:20:14 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 typedef struct s_philo
 {
 	pthread_t		thread;
-	int				*dead;
+	int				*stop_flag;
 	int				nb;
 	int				nb_eaten;
 	int				nb_to_eat;
@@ -33,8 +33,8 @@ typedef struct s_philo
 	size_t			time_last_meal;
 	size_t			start_time;
 	pthread_mutex_t	eat_lock;
-	pthread_mutex_t	*dead_lock;
-	pthread_mutex_t	*printf_lock;
+	pthread_mutex_t	*stop_lock;
+	pthread_mutex_t	*print_lock;
 	pthread_mutex_t	*l_fork;
 	pthread_mutex_t	*r_fork;
 }	t_philo;
@@ -43,19 +43,23 @@ typedef struct s_prog
 {
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	death_lock;
+	pthread_mutex_t	stop_lock;
 	pthread_mutex_t	print_lock;
-	int				any_dead;
+	int				stop_flag;
 	int				nb_philos;
 }	t_prog;
 
+int		check_inputs(int ac, char **av);
 size_t	get_number(const char *nptr);
+int		init_forks(t_prog *prog);
 int		init_philos_data(t_prog *prog, int ac, char **av);
 int		start_threads(t_prog *prog);
 void	*philo_routine(void *arg);
-void	print(t_philo *philo, const char *s);
-int		is_dead(t_philo *philo);
-int		eaten_enough(t_philo *philo);
+void	thread_join(t_prog *prog);
+void	check_print(t_philo *philo, const char *s);
+void	basic_print(t_philo *philo, const char *s);
+int		should_stop(t_philo *philo);
+int		eaten_enough(t_prog *prog);
 int		is_starving(t_philo *philo);
 size_t	get_current_time(void);
 void	ft_usleep(size_t time);

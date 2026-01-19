@@ -6,33 +6,11 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/18 22:27:51 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/19 13:30:56 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-
-static int	init_forks(t_prog *prog)
-{
-	int	i;
-
-	prog->forks = malloc(sizeof(pthread_mutex_t) * prog->nb_philos);
-	if (!prog->forks)
-		return (1);
-	i = -1;
-	while (++i < prog->nb_philos)
-		pthread_mutex_init(&prog->forks[i], NULL);
-	return (0);
-}
-
-static void	thread_join(t_prog *prog)
-{
-	int	i;
-
-	i = -1;
-	while (++i < prog->nb_philos)
-		pthread_join(prog->philos[i].thread, NULL);
-}
 
 static void	close_philo(t_prog *prog)
 {
@@ -52,15 +30,21 @@ static void	close_philo(t_prog *prog)
 			pthread_mutex_destroy(&prog->philos[i].eat_lock);
 		free(prog->philos);
 	}
-	pthread_mutex_destroy(&prog->death_lock);
+	pthread_mutex_destroy(&prog->stop_lock);
 	pthread_mutex_destroy(&prog->print_lock);
+}
+
+static void	stop_sim(t_prog *prog)
+{
+	pthread_mutex_lock(&prog->stop_lock);
+	prog->stop_flag = 1;
+	pthread_mutex_unlock(&prog->stop_lock);
 }
 
 static void	observer(t_prog *prog)
 {
 	int		i;
 	int		res;
-	size_t	time;
 
 	res = 0;
 	while (!res)
@@ -70,13 +54,14 @@ static void	observer(t_prog *prog)
 		{
 			if (is_starving(&prog->philos[i]))
 			{
-				pthread_mutex_lock(prog->philos[i].dead_lock);
-				*prog->philos[i].dead = 1;
-				pthread_mutex_unlock(prog->philos[i].dead_lock);
-				pthread_mutex_lock(prog->philos[i].printf_lock);
-				time = get_sim_time(&prog->philos[i]);
-				printf("%lu %d has died\n", time, prog->philos[i].nb);
-				pthread_mutex_unlock(prog->philos[i].printf_lock);
+				stop_sim(prog);
+				basic_print(&prog->philos[i], "has died");
+				res = 1;
+				break ;
+			}
+			if (eaten_enough(prog))
+			{
+				stop_sim(prog);
 				res = 1;
 				break ;
 			}
@@ -89,11 +74,11 @@ int	main(int ac, char **av)
 {
 	t_prog	prog;
 
-	if (ac != 5 && ac != 6)
+	if (check_inputs(ac - 1, av + 1))
 		return (1);
-	prog.any_dead = 0;
+	prog.stop_flag = 0;
 	prog.nb_philos = get_number(av[1]);
-	pthread_mutex_init(&prog.death_lock, NULL);
+	pthread_mutex_init(&prog.stop_lock, NULL);
 	pthread_mutex_init(&prog.print_lock, NULL);
 	if (init_forks(&prog) || init_philos_data(&prog, ac - 1, av + 1))
 	{

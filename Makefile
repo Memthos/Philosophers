@@ -1,7 +1,7 @@
 SRCS_DIR=srcs/
 INCLUDES_DIR=includes/
 OBJS_DIR=objs/
-SRCS=philo.c tools.c philosophers.c state.c time.c
+SRCS=philo.c tools.c philosophers.c state.c time.c thread.c
 OBJECTS=$(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 CFLAGS=-Werror -Wall -Wextra -g
 CC=cc
