@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 09:37:03 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/21 17:45:22 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/21 19:36:18 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	init_philos_data(t_prog *prog, int ac, char **av)
 		prog->philos[i].stop_flag = &prog->stop_flag;
 		prog->philos[i].nb = i + 1;
 		prog->philos[i].nb_eaten = 0;
-		prog->philos[i].nb_to_eat = -1;
+		prog->philos[i].nb_to_eat = 0;
 		if (ac == 5)
 			prog->philos[i].nb_to_eat = get_number(av[4]);
 		prog->philos[i].time_to_die = get_number(av[1]);
@@ -48,11 +48,10 @@ static void	lock_forks(t_philo *philo)
 	check_print(philo, "has taken a fork");
 }
 
-static void	one_philo(t_philo *philo)
+static void	one_philo_routine(t_philo *philo)
 {
 	if (philo->l_fork != philo->r_fork)
 		return ;
-	pthread_mutex_lock(philo->r_fork);
 	check_print(philo, "has taken a fork");
 	ft_usleep(philo->time_to_die);
 }
@@ -64,7 +63,7 @@ void	*philo_routine(void *arg)
 	philo = arg;
 	if (philo->nb % 2)
 		ft_usleep(1);
-	one_philo(philo);
+	one_philo_routine(philo);
 	while (!should_stop(philo))
 	{
 		lock_forks(philo);

@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:08:36 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/19 14:00:54 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/21 19:30:52 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ int	should_stop(t_philo *philo)
 
 int	eaten_enough(t_prog *prog)
 {
-	int	res;
-	int	nb_to_eat;
-	int	i;
+	int		res;
+	size_t	nb_to_eat;
+	int		i;
 
 	pthread_mutex_lock(&prog->philos[0].eat_lock);
 	nb_to_eat = prog->philos[0].nb_to_eat;
 	pthread_mutex_unlock(&prog->philos[0].eat_lock);
-	if (nb_to_eat == -1)
+	if (nb_to_eat == 0)
 		return (0);
 	i = -1;
 	res = 0;

@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/19 14:00:51 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/21 19:20:52 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ typedef struct s_philo
 	pthread_t		thread;
 	int				*stop_flag;
 	int				nb;
-	int				nb_eaten;
-	int				nb_to_eat;
+	size_t			nb_eaten;
+	size_t			nb_to_eat;
 	size_t			time_to_die;
 	size_t			time_to_eat;
 	size_t			time_to_sleep;
