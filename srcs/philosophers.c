@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 09:37:03 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/19 14:00:47 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/21 17:45:22 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int	init_philos_data(t_prog *prog, int ac, char **av)
 		prog->philos[i].nb_to_eat = -1;
 		if (ac == 5)
 			prog->philos[i].nb_to_eat = get_number(av[4]);
-		pthread_mutex_init(&prog->philos[i].eat_lock, NULL);
 		prog->philos[i].time_to_die = get_number(av[1]);
 		prog->philos[i].time_to_eat = get_number(av[2]);
 		prog->philos[i].time_to_sleep = get_number(av[3]);

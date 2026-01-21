@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 13:20:24 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/19 14:00:55 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/21 17:46:04 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ int	start_threads(t_prog *prog)
 	while (++i < prog->nb_philos)
 	{
 		prog->philos[i].start_time = start_time;
+		if (pthread_mutex_init(&prog->philos[i].eat_lock, NULL))
+			return (1);
 		if (pthread_create(&prog->philos[i].thread, NULL,
 				philo_routine, &prog->philos[i]) != 0)
 			return (1);
@@ -47,6 +49,9 @@ int	init_forks(t_prog *prog)
 		return (1);
 	i = -1;
 	while (++i < prog->nb_philos)
-		pthread_mutex_init(&prog->forks[i], NULL);
+	{
+		if (pthread_mutex_init(&prog->forks[i], NULL))
+			return (1);
+	}
 	return (0);
 }
