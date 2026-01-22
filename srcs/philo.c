@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/21 19:45:14 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/22 14:40:00 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static void	observer(t_prog *prog)
 			if (is_starving(&prog->philos[i]))
 			{
 				stop_sim(prog);
-				basic_print(&prog->philos[i], "has died");
+				basic_print(&prog->philos[i], "died");
 				res = 1;
 				break ;
 			}
@@ -66,7 +66,7 @@ static void	observer(t_prog *prog)
 				break ;
 			}
 		}
-		ft_usleep(1);
+		ft_usleep(1, NULL);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 09:37:03 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/21 19:36:18 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/22 14:44:06 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static void	one_philo_routine(t_philo *philo)
 	if (philo->l_fork != philo->r_fork)
 		return ;
 	check_print(philo, "has taken a fork");
-	ft_usleep(philo->time_to_die);
+	ft_usleep(philo->time_to_die, philo);
 }
 
 void	*philo_routine(void *arg)
@@ -62,7 +62,7 @@ void	*philo_routine(void *arg)
 
 	philo = arg;
 	if (philo->nb % 2)
-		ft_usleep(1);
+		ft_usleep(1, philo);
 	one_philo_routine(philo);
 	while (!should_stop(philo))
 	{
@@ -72,11 +72,11 @@ void	*philo_routine(void *arg)
 		philo->nb_eaten++;
 		pthread_mutex_unlock(&philo->eat_lock);
 		check_print(philo, "is eating");
-		ft_usleep(philo->time_to_eat);
+		ft_usleep(philo->time_to_eat, philo);
 		pthread_mutex_unlock(philo->l_fork);
 		pthread_mutex_unlock(philo->r_fork);
 		check_print(philo, "is sleeping");
-		ft_usleep(philo->time_to_sleep);
+		ft_usleep(philo->time_to_sleep, philo);
 		check_print(philo, "is thinking");
 	}
 	return (0);

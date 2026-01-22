@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/21 19:20:52 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/01/22 14:42:59 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int		should_stop(t_philo *philo);
 int		eaten_enough(t_prog *prog);
 int		is_starving(t_philo *philo);
 size_t	get_current_time(void);
-void	ft_usleep(size_t time);
+void	ft_usleep(size_t time, t_philo *philo);
 size_t	get_sim_time(t_philo *philo);
 
 #endif
