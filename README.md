@@ -63,4 +63,7 @@ Example:
 ```
 
 ## Resources
+
+The problem is explained in the following article : [Philosophers 42 Guide— “The Dining Philosophers Problem”](https://medium.com/@ruinadd/philosophers-42-guide-the-dining-philosophers-problem-893a24bc0fe2)
+
 This project was developed without the use of any AI tools.
