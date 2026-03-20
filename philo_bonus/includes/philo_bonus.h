@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/20 16:22:40 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 19:21:22 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,20 +44,16 @@ typedef struct s_prog
 	int		nb_philos;
 }	t_prog;
 
-int		check_inputs(int ac, char **av);
 size_t	get_number(const char *nptr);
-int		init_forks(t_prog *prog);
-int		init_philos_data(t_prog *prog, int ac, char **av);
-int		start_threads(t_prog *prog);
-void	*philo_routine(void *arg);
-void	thread_join(t_prog *prog);
-void	check_print(t_philo *philo, const char *s);
-void	basic_print(t_philo *philo, const char *s);
-int		should_stop(t_philo *philo);
+void	check_print(t_prog *philo, const char *s);
+void	basic_print(t_prog *philo, const char *s);
+
+int		should_stop(t_prog *prog);
 int		eaten_enough(t_prog *prog);
-int		is_starving(t_philo *philo);
+int		is_starving(t_prog *philo);
+
 size_t	get_current_time(void);
-void	ft_usleep(size_t time, t_philo *philo);
-size_t	get_sim_time(t_philo *philo);
+void	ft_usleep(size_t time, t_prog *prog);
+size_t	get_sim_time(t_prog *prog);
 
 #endif

@@ -6,67 +6,71 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 13:20:24 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/20 17:22:13 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 19:19:18 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_bonus.h"
 
-void	thread_join(t_prog *prog)
+void	routine(t_prog *prog)
+{
+	if (prog->nb_philos == 1)
+	{
+		check_print(prog, "has taken a fork");
+		ft_usleep(prog->data.time_to_die, prog);
+	}
+	if (prog->data.nb % 2)
+		ft_usleep(1, prog);
+	while (!should_stop(prog))
+	{
+		sem_wait(prog->sem);
+		check_print(prog, "has taken a fork");
+		sem_wait(prog->sem);
+		check_print(prog, "has taken a fork");
+		prog->data.time_last_meal = get_sim_time(prog);
+		prog->data.nb_eaten++;
+		check_print(prog, "is eating");
+		ft_usleep(prog->data.time_to_eat, prog);
+		sem_post(prog->sem);
+		sem_post(prog->sem);
+		check_print(prog, "is sleeping");
+		ft_usleep(prog->data.time_to_sleep, prog);
+		check_print(prog, "is thinking");
+	}
+	exit(0);
+}
+
+void	kill_childs(pid_t *childs, size_t nb)
 {
 	int	i;
 
-	i = -1;
-	while (++i < prog->nb_philos)
-		pthread_join(prog->philos[i].thread, NULL);
-}
-
-int	start_threads(t_prog *prog)
-{
-	int				i;
-	size_t			start_time;
-
-	i = -1;
-	start_time = get_current_time();
-	while (++i < prog->nb_philos)
+	i = 0;
+	while (i < nb)
 	{
-		prog->philos[i].start_time = start_time;
-		if (pthread_mutex_init(&prog->philos[i].eat_lock, NULL))
-			return (1);
-		if (pthread_create(&prog->philos[i].thread, NULL,
-				philo_routine, &prog->philos[i]) != 0)
-			return (1);
+		kill(childs[i], 1);
+		i++;
 	}
-	return (0);
-}
-
-void	init_data(char **av, t_prog *prog)
-{
-	prog->nb_philos = get_number(av[1]);
-	prog->sem = sem_open("forks", O_CREAT, 0666, prog->nb_philos);
-	if (prog->sem == SEM_FAILED)
-		exit(1);
-	prog->childs = malloc(sizeof(pid_t) * prog->nb_philos);
-	if (!prog->childs)
-	{
-		sem_unlink("forks");
-		exit(1);
-	}
-	prog->data.
 }
 
 int	start_childs(t_prog *prog)
 {
 	int	i;
 
-	prog->forks = malloc(sizeof(pthread_mutex_t) * prog->nb_philos);
-	if (!prog->forks)
-		return (1);
-	i = -1;
-	while (++i < prog->nb_philos)
+	i = 0;
+	while (i < prog->nb_philos)
 	{
-		if (pthread_mutex_init(&prog->forks[i], NULL))
+		prog->childs[i] = fork();
+		if (fork == -1)
+		{
+			kill_childs(prog->childs, i - 1);
 			return (1);
+		}
+		else if (prog->childs[i] == 0)
+		{
+			prog->data.nb = i + 1;
+			routine(prog);
+		}
+		i++;
 	}
 	return (0);
 }

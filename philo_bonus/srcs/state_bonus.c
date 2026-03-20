@@ -6,20 +6,15 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:08:36 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/20 14:56:16 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 19:20:52 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_bonus.h"
 
-int	should_stop(t_philo *philo)
+int	should_stop(t_prog *prog)
 {
-	int	res;
-
-	pthread_mutex_lock(philo->stop_lock);
-	res = *philo->stop_flag;
-	pthread_mutex_unlock(philo->stop_lock);
-	return (res);
+	return (0);
 }
 
 int	eaten_enough(t_prog *prog)
@@ -47,16 +42,12 @@ int	eaten_enough(t_prog *prog)
 	return (0);
 }
 
-int	is_starving(t_philo *philo)
+int	is_starving(t_prog *prog)
 {
-	int		res;
 	size_t	last_meal;
 
-	res = 0;
-	pthread_mutex_lock(&philo->eat_lock);
-	last_meal = philo->time_last_meal;
-	pthread_mutex_unlock(&philo->eat_lock);
-	if (get_sim_time(philo) - last_meal >= philo->time_to_die)
-		res = 1;
-	return (res);
+	last_meal = prog->data.time_last_meal;
+	if (get_sim_time(prog) - last_meal >= prog->data.time_to_die)
+		return (1);
+	return (0);
 }
