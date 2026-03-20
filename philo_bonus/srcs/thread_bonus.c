@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   thread.c                                           :+:      :+:    :+:   */
+/*   thread_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 13:20:24 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/21 17:46:04 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 14:56:16 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo.h"
+#include "../includes/philo_bonus.h"
 
 void	thread_join(t_prog *prog)
 {

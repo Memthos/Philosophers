@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   philosophers_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 09:37:03 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/22 14:44:06 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 14:56:16 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo.h"
+#include "../includes/philo_bonus.h"
 
 int	init_philos_data(t_prog *prog, int ac, char **av)
 {

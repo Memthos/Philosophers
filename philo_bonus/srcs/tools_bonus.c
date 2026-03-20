@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tools.c                                            :+:      :+:    :+:   */
+/*   tools_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:36:04 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/21 19:38:40 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 14:56:24 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo.h"
+#include "../includes/philo_bonus.h"
 
 size_t	get_number(const char *nptr)
 {

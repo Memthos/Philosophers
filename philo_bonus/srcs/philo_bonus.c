@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.c                                            :+:      :+:    :+:   */
+/*   philo_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/22 14:40:00 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 14:56:16 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo.h"
+#include "../includes/philo_bonus.h"
 
 static void	close_philo(t_prog *prog)
 {

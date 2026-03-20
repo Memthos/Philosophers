@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   state.c                                            :+:      :+:    :+:   */
+/*   state_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:08:36 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/21 19:30:52 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 14:56:16 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo.h"
+#include "../includes/philo_bonus.h"
 
 int	should_stop(t_philo *philo)
 {
