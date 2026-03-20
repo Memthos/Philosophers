@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/20 14:56:16 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 17:22:13 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,15 +78,7 @@ int	main(int ac, char **av)
 	ret = 0;
 	if (check_inputs(ac - 1, av + 1))
 		return (1);
-	prog.forks = NULL;
-	prog.nb_philos = get_number(av[1]);
-	prog.philos = NULL;
-	prog.stop_flag = 0;
-	if (pthread_mutex_init(&prog.stop_lock, NULL))
-		ret = 1;
-	if (!ret && pthread_mutex_init(&prog.print_lock, NULL))
-		ret = 1;
-	if (!ret && (init_forks(&prog) || init_philos_data(&prog, ac - 1, av + 1)))
+	if (init_forks(&prog))
 		ret = 1;
 	if (!ret && start_threads(&prog))
 		ret = 1;
@@ -96,5 +88,5 @@ int	main(int ac, char **av)
 		thread_join(&prog);
 	}
 	close_philo(&prog);
-	return (0);
+	return (ret);
 }

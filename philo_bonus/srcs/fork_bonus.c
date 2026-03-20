@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   thread_bonus.c                                     :+:      :+:    :+:   */
+/*   fork_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 13:20:24 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/20 14:56:16 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 17:22:13 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,22 @@ int	start_threads(t_prog *prog)
 	return (0);
 }
 
-int	init_forks(t_prog *prog)
+void	init_data(char **av, t_prog *prog)
+{
+	prog->nb_philos = get_number(av[1]);
+	prog->sem = sem_open("forks", O_CREAT, 0666, prog->nb_philos);
+	if (prog->sem == SEM_FAILED)
+		exit(1);
+	prog->childs = malloc(sizeof(pid_t) * prog->nb_philos);
+	if (!prog->childs)
+	{
+		sem_unlink("forks");
+		exit(1);
+	}
+	prog->data.
+}
+
+int	start_childs(t_prog *prog)
 {
 	int	i;
 

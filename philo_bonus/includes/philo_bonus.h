@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/22 14:42:59 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 16:22:40 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
+# include <semaphore.h>
+# include <fcntl.h>
 # include <stdio.h>
-# include <unistd.h>
 # include <stdlib.h>
-# include <string.h>
+# include <unistd.h>
+# include <sys/wait.h>
+# include <sys/types.h>
 # include <sys/time.h>
-# include <pthread.h>
+# include <signal.h>
+# include <string.h>
 
-typedef struct s_philo
+typedef struct s_data
 {
-	pthread_t		thread;
-	int				*stop_flag;
 	int				nb;
 	size_t			nb_eaten;
 	size_t			nb_to_eat;
@@ -32,21 +34,14 @@ typedef struct s_philo
 	size_t			time_to_sleep;
 	size_t			time_last_meal;
 	size_t			start_time;
-	pthread_mutex_t	eat_lock;
-	pthread_mutex_t	*stop_lock;
-	pthread_mutex_t	*print_lock;
-	pthread_mutex_t	*l_fork;
-	pthread_mutex_t	*r_fork;
-}	t_philo;
+}	t_data;
 
 typedef struct s_prog
 {
-	t_philo			*philos;
-	pthread_mutex_t	*forks;
-	pthread_mutex_t	stop_lock;
-	pthread_mutex_t	print_lock;
-	int				stop_flag;
-	int				nb_philos;
+	pid_t	*childs;
+	sem_t	*sem;
+	t_data	data;
+	int		nb_philos;
 }	t_prog;
 
 int		check_inputs(int ac, char **av);

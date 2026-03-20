@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/22 14:40:00 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/20 16:18:20 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,5 @@ int	main(int ac, char **av)
 		thread_join(&prog);
 	}
 	close_philo(&prog);
-	return (0);
+	return (ret);
 }
