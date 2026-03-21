@@ -6,67 +6,66 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/20 19:03:56 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 13:41:03 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_bonus.h"
 
-static void	close_philo(t_prog *prog)
-{
-	int	i;
-
-	if (prog->forks)
-	{
-		i = -1;
-		while (++i < prog->nb_philos)
-			pthread_mutex_destroy(&prog->forks[i]);
-		free(prog->forks);
-	}
-	if (prog->philos)
-	{
-		i = -1;
-		while (++i < prog->nb_philos)
-			pthread_mutex_destroy(&prog->philos[i].eat_lock);
-		free(prog->philos);
-	}
-	pthread_mutex_destroy(&prog->stop_lock);
-	pthread_mutex_destroy(&prog->print_lock);
-}
-
-static void	stop_sim(t_prog *prog)
-{
-	pthread_mutex_lock(&prog->stop_lock);
-	prog->stop_flag = 1;
-	pthread_mutex_unlock(&prog->stop_lock);
-}
-
 static void	observer(t_prog *prog)
 {
-	int		i;
-	int		res;
+	int			ret;
+	pthread_t	eat_thread;
+	pthread_t	stop_thread;
 
-	res = 0;
-	while (!res)
+	ret = 0;
+	if (prog->data.nb_to_eat != 0)
 	{
-		i = -1;
-		while (++i < prog->nb_philos)
-		{
-			if (is_starving(&prog->philos[i]))
-			{
-				stop_sim(prog);
-				basic_print(&prog->philos[i], "died");
-				res = 1;
-				break ;
-			}
-			if (eaten_enough(prog))
-			{
-				stop_sim(prog);
-				res = 1;
-				break ;
-			}
-		}
-		ft_usleep(1, NULL);
+		if (pthread_create(&eat_thread, NULL, &eaten_enough, prog) != 0)
+			ret = 1;
+	}
+	if (!ret && pthread_create(&stop_thread, NULL, &is_starving, prog) != 0)
+	{
+		pthread_join(eat_thread, NULL);
+		ret = 1;
+	}
+	if (ret == 0)
+	{
+		sem_wait(prog->stop);
+		write(2, "TES2\n", 5);
+		sem_wait(prog->print);
+		write(2, "TES3\n", 5);
+		pthread_join(eat_thread, NULL);
+		pthread_join(stop_thread, NULL);
+	}
+	kill_childs(prog->childs, prog->nb_philos);
+}
+
+static void	init_semaphores(t_prog *prog)
+{
+	prog->forks = sem_open("forks", O_CREAT, 0666, prog->nb_philos);
+	if (prog->forks == SEM_FAILED)
+		exit(1);
+	prog->stop = sem_open("stop", O_CREAT, 0666, 0);
+	if (prog->stop == SEM_FAILED)
+	{
+		sem_close(prog->forks);
+		exit(1);
+	}
+	prog->eaten = sem_open("eaten", O_CREAT, 0666, 0);
+	if (prog->eaten == SEM_FAILED)
+	{
+		sem_close(prog->forks);
+		sem_close(prog->stop);
+		exit(1);
+	}
+	prog->print = sem_open("print", O_CREAT, 0666, 1);
+	if (prog->print == SEM_FAILED)
+	{
+		sem_close(prog->forks);
+		sem_close(prog->stop);
+		sem_close(prog->eaten);
+		exit(1);
 	}
 }
 
@@ -74,18 +73,16 @@ static t_prog	init_data(int ac, char **av)
 {
 	t_prog	prog;
 
+	sem_unlink("forks");
+	sem_unlink("death");
+	sem_unlink("eaten");
 	prog.nb_philos = get_number(av[0]);
-	prog.sem = sem_open("forks", O_CREAT, 0666, prog.nb_philos);
-	if (prog.sem == SEM_FAILED)
-		exit(1);
+	init_semaphores(&prog);
 	prog.childs = malloc(sizeof(pid_t) * prog.nb_philos);
 	if (!prog.childs)
-	{
-		sem_unlink("forks");
 		exit(1);
-	}
 	prog.data = (t_data){0, 0, 0, get_number(av[1]), get_number(av[2]),
-		get_number(av[3]), get_current_time()};
+		get_number(av[3]), 0, get_current_time()};
 	if (ac == 5)
 		prog.data.nb_to_eat = get_number(av[4]);
 	return (prog);
@@ -108,6 +105,7 @@ static int	check_inputs(int ac, char **av)
 		{
 			if (av[i][j] < '0' || av[i][j] > '9')
 				ret = 1;
+			j++;
 		}
 		if (!ret && get_number(av[i++]) < 1)
 			ret = 1;
@@ -125,9 +123,8 @@ int	main(int ac, char **av)
 
 	if (check_inputs(ac - 1, av + 1))
 		return (1);
-	prog = init_data(ac, av);
+	prog = init_data(ac - 1, av + 1);
 	if (start_childs(&prog))
 		return (1);
 	observer(&prog);
-	close_philo(&prog);
 }

@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:08:10 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/20 19:12:19 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 13:21:35 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,11 @@ size_t	get_current_time(void)
 void	ft_usleep(size_t time, t_prog *prog)
 {
 	size_t	start;
+	(void)prog;
 
 	start = get_current_time();
 	while (get_current_time() - start < time)
-	{
-		if (should_stop(prog))
-			return ;
 		usleep(500);
-	}
 }
 
 size_t	get_sim_time(t_prog *prog)

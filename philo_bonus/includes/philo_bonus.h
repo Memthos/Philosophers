@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/20 19:21:22 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 13:15:11 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PHILO_H
 
 # include <semaphore.h>
+# include <pthread.h>
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -39,18 +40,23 @@ typedef struct s_data
 typedef struct s_prog
 {
 	pid_t	*childs;
-	sem_t	*sem;
+	sem_t	*forks;
+	sem_t	*stop;
+	sem_t	*eaten;
+	sem_t	*print;
 	t_data	data;
 	int		nb_philos;
 }	t_prog;
 
-size_t	get_number(const char *nptr);
-void	check_print(t_prog *philo, const char *s);
-void	basic_print(t_prog *philo, const char *s);
+int	start_childs(t_prog *prog);
 
-int		should_stop(t_prog *prog);
-int		eaten_enough(t_prog *prog);
-int		is_starving(t_prog *philo);
+void	*eaten_enough(void *arg);
+void	*is_starving(void *arg);
+
+void	kill_childs(pid_t *childs, int nb);
+
+size_t	get_number(const char *nptr);
+void	basic_print(t_prog *prog, int nb, const char *s);
 
 size_t	get_current_time(void);
 void	ft_usleep(size_t time, t_prog *prog);

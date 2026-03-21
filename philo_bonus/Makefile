@@ -1,11 +1,11 @@
 SRCS_DIR=srcs/
 INCLUDES_DIR=includes/
 OBJS_DIR=objs/
-SRCS=philo.c tools.c philosophers.c state.c time.c thread.c
+SRCS=fork_bonus.c philo_bonus.c state_bonus.c time_bonus.c tools_bonus.c
 OBJECTS=$(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 CFLAGS=-Werror -Wall -Wextra -g
 CC=cc
-NAME=philo
+NAME=philo_bonus
 
 all: $(NAME)
 

@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:36:04 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/20 19:15:30 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 13:40:15 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,13 @@ size_t	get_number(const char *nptr)
 	return (res);
 }
 
-void	check_print(t_prog *prog, const char *s)
-{
-	if (should_stop(prog))
-		return ;
-	basic_print(prog, s);
-}
-
-void	basic_print(t_prog *prog, const char *s)
+void	basic_print(t_prog *prog, int nb, const char *s)
 {
 	size_t	time;
 
+	sem_wait(prog->print);
+	write(2, "TEST\n", 5);
 	time = get_sim_time(prog);
-	printf("%zu %d %s\n", time, prog->data.nb, s);
+	printf("%zu %d %s\n", time, nb, s);
+	sem_post(prog->print);
 }
