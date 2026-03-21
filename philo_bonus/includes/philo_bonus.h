@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 17:09:18 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 23:53:41 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 typedef struct s_data
 {
 	int				nb;
+	int				kill;
 	size_t			nb_eaten;
 	size_t			nb_to_eat;
 	size_t			time_to_die;
@@ -41,25 +42,28 @@ typedef struct s_prog
 {
 	pid_t	*childs;
 	sem_t	*forks;
-	sem_t	*stop;
-	sem_t	*kill;
-	sem_t	*eaten;
-	sem_t	*print;
-	sem_t	*meal;
+	sem_t	*global_stop;
+	sem_t	*kill_childs;
+	sem_t	*kill_check;
+	sem_t	*eat_counter;
+	sem_t	*print_lock;
+	sem_t	*meal_lock;
 	t_data	data;
 	int		nb_philos;
 }	t_prog;
 
+int		check_inputs(int ac, char **av);
+t_prog	init_data(int ac, char **av);
+
+void	close_semaphores(t_prog *prog);
+void	kill_childs(t_prog *prog, int nb);
 int		start_childs(t_prog *prog);
 
 void	*eaten_enough(void *arg);
 void	*is_starving(void *arg);
 void	*kill_check(void *arg);
 
-void	kill_childs(t_prog *prog, int nb);
-
-size_t	get_number(const char *nptr);
-void	basic_print(t_prog *prog, const char *s);
+void	safe_print(t_prog *prog, const char *s, int bypass);
 
 size_t	get_current_time(void);
 void	ft_usleep(size_t time);

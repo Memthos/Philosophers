@@ -6,34 +6,28 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:36:04 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 16:21:36 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 23:53:02 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_bonus.h"
 
-size_t	get_number(const char *nptr)
-{
-	size_t	i;
-	size_t	res;
-
-	i = 0;
-	res = 0;
-	while (nptr[i] && (nptr[i] >= '0' && nptr[i] <= '9'))
-	{
-		if (res > ((((size_t) - 1) - (nptr[i] - '0')) / 10))
-			return (0);
-		res = (res * 10) + (nptr[i++] - '0');
-	}
-	return (res);
-}
-
-void	basic_print(t_prog *prog, const char *s)
+void	safe_print(t_prog *prog, const char *s, int bypass)
 {
 	size_t	time;
 
-	sem_wait(prog->print);
+	if (bypass == 0)
+	{
+		sem_wait(prog->kill_check);
+		if (prog->data.kill == 1)
+		{
+			sem_post(prog->kill_check);
+			return ;
+		}
+	}
+	sem_post(prog->kill_check);
+	sem_wait(prog->print_lock);
 	time = get_sim_time(prog);
 	printf("%zu %d %s\n", time, prog->data.nb, s);
-	sem_post(prog->print);
+	sem_post(prog->print_lock);
 }
