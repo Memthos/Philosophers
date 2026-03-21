@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 14:07:56 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 17:03:19 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static void	observer(t_prog *prog)
 {
 	int			ret;
 	pthread_t	eat_thread;
-	pthread_t	stop_thread;
 
 	ret = 0;
 	if (prog->data.nb_to_eat != 0)
@@ -24,18 +23,12 @@ static void	observer(t_prog *prog)
 		if (pthread_create(&eat_thread, NULL, &eaten_enough, prog) != 0)
 			ret = 1;
 	}
-	if (!ret && pthread_create(&stop_thread, NULL, &is_starving, prog) != 0)
-	{
-		pthread_join(eat_thread, NULL);
-		ret = 1;
-	}
 	if (ret == 0)
 	{
 		sem_wait(prog->stop);
 		sem_wait(prog->print);
 		if (prog->data.nb_to_eat != 0)
 			pthread_join(eat_thread, NULL);
-		pthread_join(stop_thread, NULL);
 	}
 	kill_childs(prog, prog->nb_philos);
 }
@@ -66,6 +59,25 @@ static void	init_semaphores(t_prog *prog)
 		sem_close(prog->eaten);
 		exit(1);
 	}
+	prog->kill = sem_open("kill", O_CREAT, 0666, 0);
+	if (prog->kill == SEM_FAILED)
+	{
+		sem_close(prog->forks);
+		sem_close(prog->stop);
+		sem_close(prog->eaten);
+		sem_close(prog->print);
+		exit(1);
+	}
+	prog->meal = sem_open("meal", O_CREAT, 0666, 1);
+	if (prog->meal == SEM_FAILED)
+	{
+		sem_close(prog->forks);
+		sem_close(prog->stop);
+		sem_close(prog->eaten);
+		sem_close(prog->print);
+		sem_close(prog->kill);
+		exit(1);
+	}
 }
 
 static t_prog	init_data(int ac, char **av)
@@ -73,9 +85,11 @@ static t_prog	init_data(int ac, char **av)
 	t_prog	prog;
 
 	sem_unlink("forks");
-	sem_unlink("death");
+	sem_unlink("stop");
 	sem_unlink("eaten");
 	sem_unlink("print");
+	sem_unlink("kill");
+	sem_unlink("meal");
 	prog.nb_philos = get_number(av[0]);
 	init_semaphores(&prog);
 	prog.childs = malloc(sizeof(pid_t) * prog.nb_philos);
