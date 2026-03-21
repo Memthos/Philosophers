@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 13:20:24 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 13:39:52 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 14:31:12 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void	routine(t_prog *prog)
 {
 	if (prog->data.nb % 2)
-		ft_usleep(1, prog);
+		ft_usleep(1);
 	while (1)
 	{
 		sem_wait(prog->forks);
@@ -27,35 +27,37 @@ static void	routine(t_prog *prog)
 		if (prog->data.nb_eaten == prog->data.nb_to_eat)
 			sem_post(prog->eaten);
 		basic_print(prog, prog->data.nb, "is eating");
-		ft_usleep(prog->data.time_to_eat, prog);
+		ft_usleep(prog->data.time_to_eat);
 		sem_post(prog->forks);
 		sem_post(prog->forks);
 		basic_print(prog, prog->data.nb, "is sleeping");
-		ft_usleep(prog->data.time_to_sleep, prog);
+		ft_usleep(prog->data.time_to_sleep);
 		basic_print(prog, prog->data.nb, "is thinking");
 	}
-	free(prog->childs);
 	exit(0);
 }
 
-void	kill_childs(pid_t *childs, int nb)
+void	kill_childs(t_prog *prog, int nb)
 {
 	int	i;
 
 	i = 0;
 	while (i < nb)
 	{
-		kill(childs[i], SIGTERM);
+		kill(prog->childs[i], SIGTERM);
 		i++;
 	}
 	i = 0;
 	while (i < nb)
 	{
-		waitpid(childs[i], NULL, 0);
+		waitpid(prog->childs[i], NULL, 0);
 		i++;
 	}
-	free(childs);
-
+	free(prog->childs);
+	sem_close(prog->forks);
+	sem_close(prog->stop);
+	sem_close(prog->eaten);
+	sem_close(prog->print);
 }
 
 int	start_childs(t_prog *prog)
@@ -68,12 +70,13 @@ int	start_childs(t_prog *prog)
 		prog->childs[i] = fork();
 		if (prog->childs[i] == -1)
 		{
-			kill_childs(prog->childs, i - 1);
+			kill_childs(prog, i);
 			return (1);
 		}
 		else if (prog->childs[i] == 0)
 		{
 			prog->data.nb = i + 1;
+			free(prog->childs);
 			routine(prog);
 		}
 		i++;

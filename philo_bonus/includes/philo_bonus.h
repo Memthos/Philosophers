@@ -6,12 +6,12 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 13:15:11 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 14:30:02 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_H
-# define PHILO_H
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <semaphore.h>
 # include <pthread.h>
@@ -48,18 +48,18 @@ typedef struct s_prog
 	int		nb_philos;
 }	t_prog;
 
-int	start_childs(t_prog *prog);
+int		start_childs(t_prog *prog);
 
 void	*eaten_enough(void *arg);
 void	*is_starving(void *arg);
 
-void	kill_childs(pid_t *childs, int nb);
+void	kill_childs(t_prog *prog, int nb);
 
 size_t	get_number(const char *nptr);
 void	basic_print(t_prog *prog, int nb, const char *s);
 
 size_t	get_current_time(void);
-void	ft_usleep(size_t time, t_prog *prog);
+void	ft_usleep(size_t time);
 size_t	get_sim_time(t_prog *prog);
 
 #endif

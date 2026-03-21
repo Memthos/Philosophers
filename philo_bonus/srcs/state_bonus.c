@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:08:36 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 13:17:45 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 14:28:04 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void	*eaten_enough(void *arg)
 	sem_post(prog->stop);
 	return (0);
 }
-
 
 void	*is_starving(void *arg)
 {
@@ -50,7 +49,7 @@ void	*is_starving(void *arg)
 			}
 			i++;
 		}
-		ft_usleep(1, NULL);
+		ft_usleep(1);
 	}
 	return (0);
 }

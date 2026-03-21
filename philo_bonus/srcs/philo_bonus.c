@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 13:41:03 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/21 14:07:56 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,12 @@ static void	observer(t_prog *prog)
 	if (ret == 0)
 	{
 		sem_wait(prog->stop);
-		write(2, "TES2\n", 5);
 		sem_wait(prog->print);
-		write(2, "TES3\n", 5);
-		pthread_join(eat_thread, NULL);
+		if (prog->data.nb_to_eat != 0)
+			pthread_join(eat_thread, NULL);
 		pthread_join(stop_thread, NULL);
 	}
-	kill_childs(prog->childs, prog->nb_philos);
+	kill_childs(prog, prog->nb_philos);
 }
 
 static void	init_semaphores(t_prog *prog)
@@ -76,6 +75,7 @@ static t_prog	init_data(int ac, char **av)
 	sem_unlink("forks");
 	sem_unlink("death");
 	sem_unlink("eaten");
+	sem_unlink("print");
 	prog.nb_philos = get_number(av[0]);
 	init_semaphores(&prog);
 	prog.childs = malloc(sizeof(pid_t) * prog.nb_philos);
