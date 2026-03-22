@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:08:10 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 14:27:05 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/22 11:11:53 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,17 @@ size_t	get_current_time(void)
 	return (time);
 }
 
-void	ft_usleep(size_t time)
+void	ft_usleep(size_t time, t_prog *prog)
 {
 	size_t	start;
 
 	start = get_current_time();
 	while (get_current_time() - start < time)
+	{
+		if (should_stop(prog))
+			return ;
 		usleep(500);
+	}
 }
 
 size_t	get_sim_time(t_prog *prog)

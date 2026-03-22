@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 23:53:41 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/22 10:55:55 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,13 @@ int		start_childs(t_prog *prog);
 
 void	*eaten_enough(void *arg);
 void	*is_starving(void *arg);
-void	*kill_check(void *arg);
+void	*kill_state(void *arg);
+int		should_stop(t_prog *prog);
 
-void	safe_print(t_prog *prog, const char *s, int bypass);
+void	safe_print(t_prog *prog, const char *s);
 
 size_t	get_current_time(void);
-void	ft_usleep(size_t time);
+void	ft_usleep(size_t time, t_prog *prog);
 size_t	get_sim_time(t_prog *prog);
 
 #endif

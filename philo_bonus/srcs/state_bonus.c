@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:08:36 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 23:56:11 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/22 11:27:06 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,33 +34,23 @@ void	*is_starving(void *arg)
 	size_t	last_meal;
 
 	prog = (t_prog *)arg;
-	while (1)
+	while (!should_stop(prog))
 	{
-		sem_wait(prog->kill_check);
-		if (prog->data.kill == 1)
-		{
-			sem_post(prog->kill_check);
-			break ;
-		}
-		sem_post(prog->kill_check);
 		sem_wait(prog->meal_lock);
 		last_meal = prog->data.time_last_meal;
 		sem_post(prog->meal_lock);
 		if (get_sim_time(prog) - last_meal >= prog->data.time_to_die)
 		{
-			sem_wait(prog->kill_check);
-			prog->data.kill = 1;
-			sem_post(prog->kill_check);
-			safe_print(prog, "died", 1);
+			safe_print(prog, "died");
 			sem_post(prog->global_stop);
 			break ;
 		}
-		ft_usleep(1);
+		ft_usleep(1, prog);
 	}
 	return (0);
 }
 
-void	*kill_check(void *arg)
+void	*kill_state(void *arg)
 {
 	t_prog	*prog;
 
@@ -71,5 +61,18 @@ void	*kill_check(void *arg)
 	sem_post(prog->kill_check);
 	sem_post(prog->forks);
 	sem_post(prog->forks);
+	sem_post(prog->print_lock);
 	return (0);
+}
+
+int	should_stop(t_prog *prog)
+{
+	int	ret;
+
+	ret = 0;
+	sem_wait(prog->kill_check);
+	if (prog->data.kill == 1)
+		ret = 1;
+	sem_post(prog->kill_check);
+	return (ret);
 }

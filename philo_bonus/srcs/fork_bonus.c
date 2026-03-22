@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 13:20:24 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 23:53:57 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/22 11:32:14 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,38 +17,31 @@ static void	routine(t_prog *prog)
 	pthread_t	kill_thread;
 	pthread_t	starve_thread;
 
-	if (pthread_create(&kill_thread, NULL, &kill_check, prog) != 0)
+	if (pthread_create(&kill_thread, NULL, &kill_state, prog) != 0)
 		exit(0);
 	if (pthread_create(&starve_thread, NULL, &is_starving, prog) != 0)
 		sem_post(prog->global_stop);
 	if (prog->data.nb % 2)
-		ft_usleep(1);
-	while (1)
+		ft_usleep(1, prog);
+	while (!should_stop(prog))
 	{
-		sem_wait(prog->kill_check);
-		if (prog->data.kill == 1)
-		{
-			sem_post(prog->kill_check);
-			break ;
-		}
-		sem_post(prog->kill_check);
 		sem_wait(prog->forks);
-		safe_print(prog, "has taken a fork", 0);
+		safe_print(prog, "has taken a fork");
 		sem_wait(prog->forks);
-		safe_print(prog, "has taken a fork", 0);
+		safe_print(prog, "has taken a fork");
 		sem_wait(prog->meal_lock);
 		prog->data.time_last_meal = get_sim_time(prog);
 		prog->data.nb_eaten++;
 		sem_post(prog->meal_lock);
 		if (prog->data.nb_eaten == prog->data.nb_to_eat)
 			sem_post(prog->eat_counter);
-		safe_print(prog, "is eating", 0);
-		ft_usleep(prog->data.time_to_eat);
+		safe_print(prog, "is eating");
+		ft_usleep(prog->data.time_to_eat, prog);
 		sem_post(prog->forks);
 		sem_post(prog->forks);
-		safe_print(prog, "is sleeping", 0);
-		ft_usleep(prog->data.time_to_sleep);
-		safe_print(prog, "is thinking", 0);
+		safe_print(prog, "is sleeping");
+		ft_usleep(prog->data.time_to_sleep, prog);
+		safe_print(prog, "is thinking");
 	}
 	pthread_join(kill_thread, NULL);
 	pthread_join(starve_thread, NULL);
