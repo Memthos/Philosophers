@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:08:36 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/22 11:27:06 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/22 11:38:29 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void	*kill_state(void *arg)
 	sem_post(prog->kill_check);
 	sem_post(prog->forks);
 	sem_post(prog->forks);
-	sem_post(prog->print_lock);
 	return (0);
 }
 
