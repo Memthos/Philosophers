@@ -4,7 +4,7 @@ OBJS_DIR=objs/
 SRCS=fork_bonus.c init.c philo_bonus.c state_bonus.c time_bonus.c tools_bonus.c
 OBJECTS=$(addprefix $(OBJS_DIR), $(SRCS:.c=.o))
 CFLAGS=-Werror -Wall -Wextra -g
-CC=cc
+CC=gcc
 NAME=philo_bonus
 
 all: $(NAME)
