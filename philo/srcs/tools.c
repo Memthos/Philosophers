@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:36:04 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/21 19:38:40 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/23 18:48:11 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ size_t	get_number(const char *nptr)
 	res = 0;
 	while (nptr[i] && (nptr[i] >= '0' && nptr[i] <= '9'))
 	{
-		res *= 10;
-		res += nptr[i] - 48;
-		i++;
+		if (res > ((((size_t) - 1) - (nptr[i] - '0')) / 10))
+			return (0);
+		res = (res * 10) + (nptr[i++] - '0');
 	}
 	return (res);
 }
@@ -45,38 +45,31 @@ void	basic_print(t_philo *philo, const char *s)
 	pthread_mutex_unlock(philo->print_lock);
 }
 
-static int	contain_char(char **s)
-{
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	while (s[i])
-	{
-		j = 0;
-		while (s[i][j])
-		{
-			if (s[i][j] < '0' || s[i][j] > '9')
-				return (1);
-			j++;
-		}
-		i++;
-	}
-	return (0);
-}
-
 int	check_inputs(int ac, char **av)
 {
 	int	ret;
+	int	i;
+	int	j;
 
 	ret = 0;
 	if (ac != 4 && ac != 5)
 		ret = 1;
-	if (!ret && (get_number(av[0]) < 1 || get_number(av[0]) > 200))
-		ret = 1;
-	if (!ret && (contain_char(av)))
+	i = 0;
+	while (!ret && av[i])
+	{
+		j = 0;
+		while (!ret && av[i][j])
+		{
+			if (av[i][j] < '0' || av[i][j] > '9')
+				ret = 1;
+			j++;
+		}
+		if (!ret && get_number(av[i++]) < 1)
+			ret = 1;
+	}
+	if (!ret && get_number(av[0]) > 200)
 		ret = 1;
 	if (ret)
-		printf("Wrong arguments\n");
+		write(2, "Wrong arguments\n", 16);
 	return (ret);
 }
