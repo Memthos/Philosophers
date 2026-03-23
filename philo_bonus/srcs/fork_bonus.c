@@ -6,23 +6,14 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 13:20:24 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/22 11:32:14 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/23 18:33:56 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_bonus.h"
 
-static void	routine(t_prog *prog)
+static void	routine_actions(t_prog *prog)
 {
-	pthread_t	kill_thread;
-	pthread_t	starve_thread;
-
-	if (pthread_create(&kill_thread, NULL, &kill_state, prog) != 0)
-		exit(0);
-	if (pthread_create(&starve_thread, NULL, &is_starving, prog) != 0)
-		sem_post(prog->global_stop);
-	if (prog->data.nb % 2)
-		ft_usleep(1, prog);
 	while (!should_stop(prog))
 	{
 		sem_wait(prog->forks);
@@ -43,6 +34,20 @@ static void	routine(t_prog *prog)
 		ft_usleep(prog->data.time_to_sleep, prog);
 		safe_print(prog, "is thinking");
 	}
+}
+
+static void	routine(t_prog *prog)
+{
+	pthread_t	kill_thread;
+	pthread_t	starve_thread;
+
+	if (pthread_create(&kill_thread, NULL, &kill_state, prog) != 0)
+		exit(0);
+	if (pthread_create(&starve_thread, NULL, &is_starving, prog) != 0)
+		sem_post(prog->global_stop);
+	if (prog->data.nb % 2)
+		ft_usleep(1, prog);
+	routine_actions(prog);
 	pthread_join(kill_thread, NULL);
 	pthread_join(starve_thread, NULL);
 	close_semaphores(prog);

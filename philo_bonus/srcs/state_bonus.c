@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/18 22:08:36 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/22 11:38:29 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/23 18:16:35 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ void	*is_starving(void *arg)
 		{
 			safe_print(prog, "died");
 			sem_post(prog->global_stop);
+			ft_usleep(5, prog);
+			sem_post(prog->print_lock);
 			break ;
 		}
 		ft_usleep(1, prog);
