@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 13:20:24 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/23 18:33:56 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/24 20:50:17 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ static void	routine(t_prog *prog)
 	if (pthread_create(&starve_thread, NULL, &is_starving, prog) != 0)
 		sem_post(prog->global_stop);
 	if (prog->data.nb % 2)
-		ft_usleep(1, prog);
+		ft_usleep(10, prog);
 	routine_actions(prog);
 	pthread_join(kill_thread, NULL);
 	pthread_join(starve_thread, NULL);
