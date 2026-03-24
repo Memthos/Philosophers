@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 09:37:03 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/22 14:44:06 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/24 21:13:36 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,34 @@ int	init_philos_data(t_prog *prog, int ac, char **av)
 
 static void	lock_forks(t_philo *philo)
 {
-	pthread_mutex_lock(philo->r_fork);
-	check_print(philo, "has taken a fork");
-	pthread_mutex_lock(philo->l_fork);
-	check_print(philo, "has taken a fork");
+	if (philo->l_fork < philo->r_fork)
+	{
+		pthread_mutex_lock(philo->l_fork);
+		check_print(philo, "has taken a fork");
+		pthread_mutex_lock(philo->r_fork);
+		check_print(philo, "has taken a fork");
+	}
+	else
+	{
+		pthread_mutex_lock(philo->r_fork);
+		check_print(philo, "has taken a fork");
+		pthread_mutex_lock(philo->l_fork);
+		check_print(philo, "has taken a fork");
+	}
+}
+
+static void	unlock_forks(t_philo *philo)
+{
+	if (philo->l_fork < philo->r_fork)
+	{
+		pthread_mutex_unlock(philo->r_fork);
+		pthread_mutex_unlock(philo->l_fork);
+	}
+	else
+	{
+		pthread_mutex_unlock(philo->l_fork);
+		pthread_mutex_unlock(philo->r_fork);
+	}
 }
 
 static void	one_philo_routine(t_philo *philo)
@@ -73,8 +97,7 @@ void	*philo_routine(void *arg)
 		pthread_mutex_unlock(&philo->eat_lock);
 		check_print(philo, "is eating");
 		ft_usleep(philo->time_to_eat, philo);
-		pthread_mutex_unlock(philo->l_fork);
-		pthread_mutex_unlock(philo->r_fork);
+		unlock_forks(philo);
 		check_print(philo, "is sleeping");
 		ft_usleep(philo->time_to_sleep, philo);
 		check_print(philo, "is thinking");
