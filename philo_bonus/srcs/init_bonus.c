@@ -1,16 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   init_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 20:57:31 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/21 21:56:33 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/24 15:18:01 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_bonus.h"
+
+static void	set_semaphores_values(t_prog *prog)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < prog->nb_philos)
+	{
+		sem_post(prog->forks);
+		i++;
+	}
+	sem_post(prog->kill_check);
+	sem_post(prog->print_lock);
+	sem_post(prog->meal_lock);
+}
 
 static int	init_semaphores(t_prog *prog)
 {
@@ -21,13 +36,13 @@ static int	init_semaphores(t_prog *prog)
 	sem_unlink("eat_counter");
 	sem_unlink("print_lock");
 	sem_unlink("meal_lock");
-	prog->forks = sem_open("forks", O_CREAT, 0666, prog->nb_philos);
+	prog->forks = sem_open("forks", O_CREAT, 0666, 0);
 	prog->global_stop = sem_open("global_stop", O_CREAT, 0666, 0);
 	prog->kill_childs = sem_open("kill_childs", O_CREAT, 0666, 0);
-	prog->kill_check = sem_open("kill_check", O_CREAT, 0666, 1);
+	prog->kill_check = sem_open("kill_check", O_CREAT, 0666, 0);
 	prog->eat_counter = sem_open("eat_counter", O_CREAT, 0666, 0);
-	prog->print_lock = sem_open("print_lock", O_CREAT, 0666, 1);
-	prog->meal_lock = sem_open("meal_lock", O_CREAT, 0666, 1);
+	prog->print_lock = sem_open("print_lock", O_CREAT, 0666, 0);
+	prog->meal_lock = sem_open("meal_lock", O_CREAT, 0666, 0);
 	if (prog->forks == SEM_FAILED || prog->global_stop == SEM_FAILED
 		|| prog->eat_counter == SEM_FAILED || prog->print_lock == SEM_FAILED
 		|| prog->kill_childs == SEM_FAILED || prog->meal_lock == SEM_FAILED
@@ -66,6 +81,7 @@ t_prog	init_data(int ac, char **av)
 		close_semaphores(&prog);
 		exit(1);
 	}
+	set_semaphores_values(&prog);
 	prog.childs = malloc(sizeof(pid_t) * prog.nb_philos);
 	if (!prog.childs)
 	{
