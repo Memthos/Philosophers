@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/13 13:03:09 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/20 16:18:20 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/26 18:46:24 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,34 @@ static void	observer(t_prog *prog)
 		}
 		ft_usleep(1, NULL);
 	}
+}
+
+static int	init_philos_data(t_prog *prog, int ac, char **av)
+{
+	int	i;
+
+	prog->philos = malloc(sizeof(t_philo) * prog->nb_philos);
+	if (!prog->philos)
+		return (1);
+	i = -1;
+	while (++i < prog->nb_philos)
+	{
+		prog->philos[i].stop_flag = &prog->stop_flag;
+		prog->philos[i].nb = i + 1;
+		prog->philos[i].nb_eaten = 0;
+		prog->philos[i].nb_to_eat = 0;
+		if (ac == 5)
+			prog->philos[i].nb_to_eat = get_number(av[4]);
+		prog->philos[i].time_to_die = get_number(av[1]);
+		prog->philos[i].time_to_eat = get_number(av[2]);
+		prog->philos[i].time_to_sleep = get_number(av[3]);
+		prog->philos[i].time_last_meal = 0;
+		prog->philos[i].stop_lock = &prog->stop_lock;
+		prog->philos[i].print_lock = &prog->print_lock;
+		prog->philos[i].l_fork = &prog->forks[i];
+		prog->philos[i].r_fork = &prog->forks[(i + 1) % prog->nb_philos];
+	}
+	return (0);
 }
 
 int	main(int ac, char **av)

@@ -6,11 +6,35 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/21 20:57:31 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/24 20:56:34 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/26 18:49:14 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_bonus.h"
+
+int	start_childs(t_prog *prog)
+{
+	int	i;
+
+	i = 0;
+	while (i < prog->nb_philos)
+	{
+		prog->childs[i] = fork();
+		if (prog->childs[i] == -1)
+		{
+			kill_childs(prog, i);
+			return (1);
+		}
+		else if (prog->childs[i] == 0)
+		{
+			prog->data.nb = i + 1;
+			free(prog->childs);
+			routine(prog);
+		}
+		i++;
+	}
+	return (0);
+}
 
 static int	init_semaphores(t_prog *prog)
 {

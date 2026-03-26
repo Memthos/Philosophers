@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/22 10:55:55 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/26 18:49:54 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_prog
 	int		nb_philos;
 }	t_prog;
 
+void	routine(t_prog *prog);
 int		check_inputs(int ac, char **av);
 t_prog	init_data(int ac, char **av);
 

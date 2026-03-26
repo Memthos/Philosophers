@@ -6,11 +6,24 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 13:20:24 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/24 20:50:17 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/26 18:51:58 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_bonus.h"
+
+void	think(t_prog *prog)
+{
+	long	time;
+
+	time = prog->data.time_to_die - prog->data.time_to_eat
+		- prog->data.time_to_sleep - 10;
+	if (time < 0)
+		time = 0;
+	else if (time > 600)
+		time = 200;
+	ft_usleep((size_t)time / 2, prog);
+}
 
 static void	routine_actions(t_prog *prog)
 {
@@ -33,10 +46,11 @@ static void	routine_actions(t_prog *prog)
 		safe_print(prog, "is sleeping");
 		ft_usleep(prog->data.time_to_sleep, prog);
 		safe_print(prog, "is thinking");
+		think(prog);
 	}
 }
 
-static void	routine(t_prog *prog)
+void	routine(t_prog *prog)
 {
 	pthread_t	kill_thread;
 	pthread_t	starve_thread;
@@ -91,28 +105,4 @@ void	kill_childs(t_prog *prog, int nb)
 	}
 	free(prog->childs);
 	close_semaphores(prog);
-}
-
-int	start_childs(t_prog *prog)
-{
-	int	i;
-
-	i = 0;
-	while (i < prog->nb_philos)
-	{
-		prog->childs[i] = fork();
-		if (prog->childs[i] == -1)
-		{
-			kill_childs(prog, i);
-			return (1);
-		}
-		else if (prog->childs[i] == 0)
-		{
-			prog->data.nb = i + 1;
-			free(prog->childs);
-			routine(prog);
-		}
-		i++;
-	}
-	return (0);
 }

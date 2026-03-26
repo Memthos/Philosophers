@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 10:43:08 by mperrine          #+#    #+#             */
-/*   Updated: 2026/01/22 14:42:59 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/26 18:46:19 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ typedef struct s_prog
 int		check_inputs(int ac, char **av);
 size_t	get_number(const char *nptr);
 int		init_forks(t_prog *prog);
-int		init_philos_data(t_prog *prog, int ac, char **av);
 int		start_threads(t_prog *prog);
 void	*philo_routine(void *arg);
 void	thread_join(t_prog *prog);
