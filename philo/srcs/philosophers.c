@@ -6,7 +6,7 @@
 /*   By: mperrine <mperrine@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/14 09:37:03 by mperrine          #+#    #+#             */
-/*   Updated: 2026/03/26 18:46:03 by mperrine         ###   ########.fr       */
+/*   Updated: 2026/03/30 11:23:25 by mperrine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static void	unlock_forks(t_philo *philo)
 static void	one_philo_routine(t_philo *philo)
 {
 	check_print(philo, "has taken a fork");
-	ft_usleep(philo->time_to_die, philo);
+	ft_usleep(philo->time_to_die + 1, philo);
 }
 
 void	think(t_philo *philo)
