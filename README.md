@@ -11,7 +11,6 @@ A `Makefile` is provided to compile the project.
 **Build**
 ```bash
 make
-make bonus
 ```
 
 **Clean**
